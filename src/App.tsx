@@ -1,5 +1,7 @@
-import React, {createContext, useEffect, useReducer, useState} from 'react';
 import TestComponent from "./TestComponent";
+import React, {createContext, useEffect, useReducer, useState} from 'react';
+import {ThemeProvider} from "./customHooks/ThemeProvider";
+import Page from "./components/Page";
 
 export const ThemeContext = createContext('light')
 
@@ -100,22 +102,25 @@ function App() {
     //     localStorage.setItem("tasks", JSON.stringify(state.tasks))
     // }, [state.tasks])
 
-    const [theme, setTheme] = useState('dark')
+    // const [theme, setTheme] = useState('dark')
+    //
+    // const toggleThemeHandler = () => {
+    //     setTheme((prevTheme) => {
+    //         return prevTheme === 'dark' ? 'light' : 'dark'
+    //     })
+    // }
 
-    const toggleThemeHandler = () => {
-        setTheme((prevTheme) => {
-            return prevTheme === 'dark' ? 'light' : 'dark'
-        })
-    }
 
     return (
         <div className="revise-container">
-
-            <ThemeContext.Provider value={theme}>
-                <TestComponent>
-                    <button onClick={toggleThemeHandler}>Toggle Theme</button>
-                </TestComponent>
-            </ThemeContext.Provider>
+            <ThemeProvider>
+                <Page/>
+            </ThemeProvider>
+            {/*<ThemeContext.Provider value={theme}>*/}
+            {/*    <TestComponent>*/}
+            {/*        <button onClick={toggleThemeHandler}>Toggle Theme</button>*/}
+            {/*    </TestComponent>*/}
+            {/*</ThemeContext.Provider>*/}
             {/*    Challenge 1   */}
             {/*    <button onClick={() => dispatch({type: "increment"})}>+</button>*/}
             {/*    <p>{state.count}</p>*/}
