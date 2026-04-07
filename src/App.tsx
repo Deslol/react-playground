@@ -117,11 +117,75 @@ function App() {
     function throttleFactory(fn: (...args: any[]) => any, delay: number) {
         let lastCall: number | null = null;
 
-        return function (...args: any[]){
+        return function (...args: any[]) {
             const now = Date.now()
-            if(lastCall !== null && now - lastCall < delay) return
+            if (lastCall !== null && now - lastCall < delay) return
             lastCall = now;
             fn(...args)
+        }
+    }
+
+    // function batchingFactory(fn: (items: any[]) => any, max_batch_size: number, delay: number) {
+    //     let queue: any[] = []
+    //     let timer: ReturnType<typeof setTimeout> | null = null;
+    //
+    //     function flush() {
+    //         if (queue.length <= 0) return;
+    //
+    //         const batch = queue
+    //         queue = []
+    //
+    //         if (timer) {
+    //             clearTimeout(timer)
+    //             timer = null
+    //         }
+    //
+    //         fn(batch)
+    //     }
+    //
+    //     return function (item: any) {
+    //         queue.push(item)
+    //
+    //         if (queue.length >= max_batch_size) {
+    //             flush()
+    //             return
+    //         }
+    //
+    //         if (!timer) {
+    //             timer = setTimeout(flush, delay)
+    //         }
+    //     }
+    // }
+
+    function batchingFactory(fn: (items: any[]) => any, max: number, delay: number) {
+        let queue: any[] = []
+        let timer: ReturnType<typeof setTimeout> | null = null;
+
+        function flush() {
+            if (queue.length <= 0) return;
+
+            if (timer) {
+                clearTimeout(timer)
+                timer = null
+            }
+
+            const batch = queue;
+            queue = []
+
+            fn(batch)
+        }
+
+        return function (item: any) {
+            queue.push(item)
+
+            if (queue.length >= max) {
+                flush();
+                return;
+            }
+
+            if (!timer) {
+                timer = setTimeout(flush, delay)
+            }
         }
     }
 
