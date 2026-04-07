@@ -2,6 +2,9 @@ import TestComponent from "./TestComponent";
 import React, {createContext, useEffect, useReducer, useState} from 'react';
 import {ThemeProvider} from "./customHooks/ThemeProvider";
 import Page from "./components/Page";
+import {TasksProvider} from "./customHooks/TasksProvider";
+import AddTaskButton from "./components/AddTaskButton";
+import TaskManager from "./components/TasksManager";
 
 export const ThemeContext = createContext('light')
 
@@ -111,11 +114,26 @@ function App() {
     // }
 
 
+    function throttleFactory(fn: (...args: any[]) => any, delay: number) {
+        let lastCall: number | null = null;
+
+        return function (...args: any[]){
+            const now = Date.now()
+            if(lastCall !== null && now - lastCall < delay) return
+            lastCall = now;
+            fn(...args)
+        }
+    }
+
     return (
         <div className="revise-container">
-            <ThemeProvider>
-                <Page/>
-            </ThemeProvider>
+            <TasksProvider>
+                <TaskManager/>
+            </TasksProvider>
+
+            {/*<ThemeProvider>*/}
+            {/*    <Page/>*/}
+            {/*</ThemeProvider>*/}
             {/*<ThemeContext.Provider value={theme}>*/}
             {/*    <TestComponent>*/}
             {/*        <button onClick={toggleThemeHandler}>Toggle Theme</button>*/}
